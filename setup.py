@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     description='Easy to use WSI2tif for all those coding-elite wannabes.',
     author='Valentina Matos',
-    url='https://github.com/Valentinamatos/CODA_python',
+    url='https://github.com/Valentinamatos/WSI2tif-for-dummies',
     packages=find_packages(),
     install_requires=[
         'numpy==1.23.5',
