@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='WSI2tif for dummies',
+    name='WSI2tif_for_dummies',
     version='0.1.0',
     description='Easy to use WSI2tif for all those coding-elite wannabes.',
     author='Valentina Matos',
