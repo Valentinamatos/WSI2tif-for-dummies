@@ -4,7 +4,7 @@ Easy to use tool to convert whole slide images (WSI) to tif format.
 
 ## Quick Install
 
-1. **Download and Install Miniconda**
+1. **Download and install Miniconda**
 
    Follow the instructions [here](https://docs.anaconda.com/miniconda/) to download and install Miniconda.
 
