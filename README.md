@@ -20,7 +20,7 @@ Easy to use tool to convert whole slide images (WSI) to tif format.
 
 3. **Install WSI2tif**
   
-    Install the ANACODA package using pip:
+    Install the WSI2tif package using pip:
     
     ```sh
     pip install -e git+https://github.com/Valentinamatos/WSI2tif-for-dummies.git#egg=WSI2tif_for_dummies
