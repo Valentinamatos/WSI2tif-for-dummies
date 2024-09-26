@@ -25,3 +25,4 @@ Easy to use tool to convert whole slide images (WSI) to tif format.
     ```sh
     pip install -e git+https://github.com/Valentinamatos/WSI2tif-for-dummies.git#egg=WSI2tif_for_dummies
       ```
+    *Note. You might need to install Git from the following [link](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to be able to run the pip install command.
