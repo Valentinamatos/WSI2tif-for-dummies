@@ -29,7 +29,7 @@ else:
 
 def process_missing_images(pth, resolutions, umpix_list, missing_images):
     """Process missing images by converting .ndpi or .svs files to .tif."""
-    for idx, missing_image in enumerate(missing_images):
+    for idx, missing_image in enumerate(sorted(missing_images)):
         print(f"{idx + 1} / {len(missing_images)} processing: {missing_image}")
         try:
             # Open the slide
