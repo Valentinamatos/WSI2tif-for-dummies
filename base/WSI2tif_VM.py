@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 import os
 import glob
+import time
 
 # Add the OpenSlide DLL directory
 try:
@@ -30,6 +31,7 @@ else:
 def process_missing_images(pth, resolutions, umpix_list, missing_images):
     """Process missing images by converting .ndpi or .svs files to .tif."""
     for idx, missing_image in enumerate(sorted(missing_images)):
+        start_time = time.time()
         print(f"{idx + 1} / {len(missing_images)} processing: {missing_image}")
         try:
             # Open the slide
@@ -57,7 +59,8 @@ def process_missing_images(pth, resolutions, umpix_list, missing_images):
                 resized_img.save(output_path, resolution=1, resolution_unit=1, quality=100, compression=None)
         except Exception as e:
             print(f"Error processing {missing_image}: {e}")
-
+        image_time = time.time() - start_time
+        print(f"   Processing time: {image_time:.2f} seconds")
 
 def WSI2tif(pth, resolutions, umpix_list):
     if len(resolutions) != len(umpix_list):
