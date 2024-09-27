@@ -1,7 +1,7 @@
 """
 
 Author: Valentina Matos (Johns Hopkins - Kiemen/Wirtz Lab)
-Date: September 11, 2024
+Date: September 27th, 2024
 """
 
 from PIL import Image
