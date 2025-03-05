@@ -9,23 +9,25 @@ import numpy as np
 import os
 import glob
 import time
+from openslide import OpenSlide
 
-# Add the OpenSlide DLL directory
-try:
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-except NameError:
-    script_dir = os.getcwd()  # Fallback to the current working directory
-openslide_path = os.path.join(script_dir, 'OpenSlide bin')
 
-if hasattr(os, 'add_dll_directory'):
-    # Python 3.8+
-    with os.add_dll_directory(openslide_path):
-        from openslide import OpenSlide
-else:
-    # Earlier Python versions
-    if openslide_path not in os.environ['PATH']:
-        os.environ['PATH'] = openslide_path + os.pathsep + os.environ['PATH']
-    from openslide import OpenSlide
+# # Add the OpenSlide DLL directory manually
+# try:
+#     script_dir = os.path.dirname(os.path.abspath(__file__))
+# except NameError:
+#     script_dir = os.getcwd()  # Fallback to the current working directory
+# openslide_path = os.path.join(script_dir, 'OpenSlide bin')
+#
+# if hasattr(os, 'add_dll_directory'):
+#     # Python 3.8+
+#     with os.add_dll_directory(openslide_path):
+#         from openslide import OpenSlide
+# else:
+#     # Earlier Python versions
+#     if openslide_path not in os.environ['PATH']:
+#         os.environ['PATH'] = openslide_path + os.pathsep + os.environ['PATH']
+#     from openslide import OpenSlide
 
 
 def process_missing_images(pth, resolutions, umpix_list, missing_images):

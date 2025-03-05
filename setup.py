@@ -7,12 +7,15 @@ setup(
     author='Valentina Matos',
     url='https://github.com/Valentinamatos/WSI2tif-for-dummies',
     packages=find_packages(),
+    # Update setup.py to avoid building from source
     install_requires=[
-        'numpy==1.23.5',
+        'numpy>=1.23.5',
         'pillow==10.4.0',
-        'setuptools==72.1.0',
+        'setuptools==75.8.2',
         'openslide-python==1.3.1',
-        'jupyter==1.1.1'
+        'jupyter==1.1.1',
+        'matplotlib==3.7.2',
+        'openslide-bin'
     ],
     package_data={
         '': ['*.ipynb', '*.qss'],
