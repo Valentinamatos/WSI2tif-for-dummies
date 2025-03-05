@@ -1,9 +1,0 @@
-README.md
-setup.py
-WSI2tif_for_dummies.egg-info/PKG-INFO
-WSI2tif_for_dummies.egg-info/SOURCES.txt
-WSI2tif_for_dummies.egg-info/dependency_links.txt
-WSI2tif_for_dummies.egg-info/requires.txt
-WSI2tif_for_dummies.egg-info/top_level.txt
-base/WSI2tif_VM.py
-base/__init__.py
