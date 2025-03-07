@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="WSI2tifenv" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="WSI2tifenv" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="WSI2tif" project-jdk-type="Python SDK" />
 </project>
