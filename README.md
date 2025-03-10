@@ -33,9 +33,4 @@ This package automatically installs the following dependencies:
 - pillow (10.4.0)
 - openslide-python (1.3.1)
 - jupyter (1.1.1)
-- matplotlib (3.7.2)
 - openslide-bin
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE.txt file for details.
