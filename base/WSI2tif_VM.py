@@ -1,35 +1,59 @@
 """
 
 Author: Valentina Matos (Johns Hopkins - Kiemen/Wirtz Lab)
-Date: September 27th, 2024
+Date: May , 2025
 """
+
 
 from PIL import Image
 import numpy as np
-import os
 import glob
+import os
+import platform
+import ctypes
 import time
 
-#Try importing Openslide, if it fails, add the OpenSlide DLL directory manually
+
+Image.MAX_IMAGE_PIXELS = None
+
+
+# Try importing OpenSlide, handle platform-specific behavior
 try:
     from openslide import OpenSlide
 except ImportError:
-    # Add the OpenSlide DLL directory manually
+    system_platform = platform.system()
+
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
     except NameError:
         script_dir = os.getcwd()  # Fallback to the current working directory
-    openslide_path = os.path.join(script_dir, 'OpenSlide bin')
+    openslide_dll_path = os.path.join(script_dir, 'OpenSlide bin')
 
-    if hasattr(os, 'add_dll_directory'):
-        # Python 3.8+
-        with os.add_dll_directory(openslide_path):
+    if system_platform == "Windows":
+        # Add the OpenSlide DLL manually for Windows
+        dll_file = os.path.join(openslide_dll_path, 'libopenslide-1.dll')
+        if hasattr(os, 'add_dll_directory'):
+            # Python 3.8+
+            with os.add_dll_directory(openslide_dll_path):
+                ctypes.cdll.LoadLibrary(dll_file)
+                from openslide import OpenSlide
+        else:
+            # Earlier Python versions
+            if openslide_dll_path not in os.environ['PATH']:
+                os.environ['PATH'] = openslide_dll_path + os.pathsep + os.environ['PATH']
+            ctypes.cdll.LoadLibrary(dll_file)
             from openslide import OpenSlide
+
+    elif system_platform == "Darwin":  # macOS
+        # Load libopenslide.1.dylib for macOS
+        dylib_file = os.path.join(openslide_dll_path, 'libopenslide.1.dylib')
+        try:
+            ctypes.cdll.LoadLibrary(dylib_file)
+            from openslide import OpenSlide
+        except OSError as e:
+            raise ImportError(f"Failed to load {dylib_file} on macOS. Ensure it is installed.") from e
     else:
-        # Earlier Python versions
-        if openslide_path not in os.environ['PATH']:
-            os.environ['PATH'] = openslide_path + os.pathsep + os.environ['PATH']
-        from openslide import OpenSlide
+        raise ImportError(f"Unsupported platform: {system_platform}")
 
 
 def process_missing_images(pth, resolutions, umpix_list, missing_images):
@@ -95,7 +119,7 @@ def WSI2tif(pth, resolutions, umpix_list):
 
 
 if __name__ == '__main__':
-    path = r'\\10.99.68.52\Kiemendata\Valentina Matos\tissues for methods paper\slides scanned from bispecific study'
+    path = r'\\path\Kiemendata\Valentina Matos\tissues for methods paper\slides scanned from bispecific study'
     # 8um = 1.25x #4um = 2.5x, #2um=5x, 1um=10x, 0.5um=20x, 0.25um=40x
     resolutions = ['10x', '5x', '1x']
     umpix_list = [1, 2, 4]
