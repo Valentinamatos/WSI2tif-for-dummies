@@ -63,7 +63,16 @@ def process_missing_images(pth, resolutions, umpix_list, missing_images):
         print(f"{idx + 1} / {len(missing_images)} processing: {missing_image}")
         try:
             # Open the slide
-            slide_path = os.path.join(pth, missing_image + '.ndpi')
+            # Try to find either .ndpi or .svs file for the missing image
+            ndpi_path = os.path.join(pth, missing_image + '.ndpi')
+            svs_path = os.path.join(pth, missing_image + '.svs')
+            if os.path.exists(ndpi_path):
+                slide_path = ndpi_path
+            elif os.path.exists(svs_path):
+                slide_path = svs_path
+            else:
+                print(f"Neither .ndpi nor .svs file found for {missing_image}")
+                continue
             wsi = OpenSlide(slide_path)
 
             # Read the slide region once
