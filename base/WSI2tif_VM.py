@@ -56,30 +56,28 @@ except ImportError:
         raise ImportError(f"Unsupported platform: {system_platform}")
 
 
-def _lock_path(output_path: str) -> str:
-    return output_path + '.lock'
+def _lock_dir(output_path: str) -> str:
+    return output_path + '.lockdir'
 
 def acquire_lock(output_path: str):
-    lock = _lock_path(output_path)
+    lockdir = _lock_dir(output_path)
     try:
-        # Exclusive create; fails if lock already exists
-        fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_RDWR)
-        return fd, lock
+        os.mkdir(lockdir)  # atomic creation
+        return lockdir
     except FileExistsError:
-        return None, lock
+        return None
 
-def release_lock(fd, lock_path: str):
+def release_lock(lockdir: str):
     try:
-        if fd is not None:
-            os.close(fd)
-        if os.path.exists(lock_path):
-            os.remove(lock_path)
+        if lockdir and os.path.isdir(lockdir):
+            os.rmdir(lockdir)
     except Exception:
         pass
 
+# Keep the temp-file save so partial writes are visible and the final move is atomic
 def safe_save_tif(resized_img: Image.Image, output_path: str):
-    # Write to a temporary file and atomically rename
     tmp_path = output_path + '.part'
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
     resized_img.save(tmp_path, resolution=1, resolution_unit=1, quality=100, compression=None)
     os.replace(tmp_path, output_path)
 
