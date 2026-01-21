@@ -128,10 +128,10 @@ def WSI2tif(pth, resolutions, umpix_list):
 
 
 if __name__ == '__main__':
-    path = r'\\path\Kiemendata\Valentina Matos\tissues for methods paper\slides scanned from bispecific study'
+    path = r'pth_to_your_WSI_files_directory'
     # 8um = 1.25x #4um = 2.5x, #2um=5x, 1um=10x, 0.5um=20x, 0.25um=40x
-    resolutions = ['10x', '5x', '1x']
-    umpix_list = [1, 2, 4]
+    resolutions = ['10x']
+    umpix_list = [1]
     WSI2tif(path, resolutions, umpix_list)
 
 
