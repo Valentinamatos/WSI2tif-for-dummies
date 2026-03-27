@@ -57,23 +57,57 @@ except ImportError:
 
 
 def process_missing_images(pth, resolutions, umpix_list, missing_images):
-    """Process missing images by converting .ndpi or .svs files to .tif."""
+    """Process missing images by converting .ndpi, .svs, or .qptiff files to .tif."""
     for idx, missing_image in enumerate(sorted(missing_images)):
         start_time = time.time()
         print(f"{idx + 1} / {len(missing_images)} processing: {missing_image}")
         try:
             # Open the slide
-            # Try to find either .ndpi or .svs file for the missing image
+            # Try to find .ndpi, .svs, or .qptiff file for the missing image
             ndpi_path = os.path.join(pth, missing_image + '.ndpi')
             svs_path = os.path.join(pth, missing_image + '.svs')
+            qptiff_path = os.path.join(pth, missing_image + '.qptiff')
+            
+            slide_path = None
+            file_type = None
+            
             if os.path.exists(ndpi_path):
                 slide_path = ndpi_path
+                file_type = '.ndpi'
             elif os.path.exists(svs_path):
                 slide_path = svs_path
+                file_type = '.svs'
+            elif os.path.exists(qptiff_path):
+                slide_path = qptiff_path
+                file_type = '.qptiff'
             else:
-                print(f"Neither .ndpi nor .svs file found for {missing_image}")
+                print(f"Neither .ndpi, .svs, nor .qptiff file found for {missing_image}")
                 continue
-            wsi = OpenSlide(slide_path)
+            
+            # Try to open with OpenSlide, fallback to PIL for qptiff if needed
+            if file_type == '.qptiff':
+                try:
+                    wsi = OpenSlide(slide_path)
+                except Exception as openslide_error:
+                    print(f"  OpenSlide failed for .qptiff, attempting PIL fallback: {openslide_error}")
+                    svs_img = Image.open(slide_path).convert('RGB')
+                    # For PIL-loaded images, we need to handle resizing differently
+                    for resolution, umpix in zip(resolutions, umpix_list):
+                        resize_dimension = (
+                            int(np.ceil(svs_img.width / umpix)),
+                            int(np.ceil(svs_img.height / umpix))
+                        )
+                        resized_img = svs_img.resize(resize_dimension, resample=Image.NEAREST)
+                        pthim = os.path.join(pth, f'{resolution}')
+                        if not os.path.isdir(pthim):
+                            os.makedirs(pthim)
+                        output_path = os.path.join(pthim, missing_image + '.tif')
+                        resized_img.save(output_path, resolution=1, resolution_unit=1, quality=100, compression=None)
+                    image_time = time.time() - start_time
+                    print(f"   Processing time: {image_time:.2f} seconds")
+                    continue
+            else:
+                wsi = OpenSlide(slide_path)
 
             # Read the slide region once
             svs_img = wsi.read_region(location=(0, 0), level=0, size=wsi.level_dimensions[0]).convert('RGB')
@@ -114,10 +148,10 @@ def WSI2tif(pth, resolutions, umpix_list):
         image_files_tif = glob.glob(os.path.join(pthim, '*.tif'))
         images_names_tif = {os.path.splitext(os.path.basename(image))[0] for image in image_files_tif}
 
-        # Get the .ndpi and .svs image names
-        image_files_wsi = glob.glob(os.path.join(pth, '*.ndpi')) + glob.glob(os.path.join(pth, '*.svs'))
+        # Get the .ndpi, .svs, and .qptiff image names
+        image_files_wsi = glob.glob(os.path.join(pth, '*.ndpi')) + glob.glob(os.path.join(pth, '*.svs')) + glob.glob(os.path.join(pth, '*.qptiff'))
         if not image_files_wsi:
-            print("No .ndpi or .svs files found in the directory.")
+            print("No .ndpi, .svs, or .qptiff files found in the directory.")
             continue
         images_names_wsi = {os.path.splitext(os.path.basename(image))[0] for image in image_files_wsi}
 
